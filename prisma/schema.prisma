@@ -1,0 +1,51 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model Pet {
+  id          String       @id @default(auto()) @map("_id") @db.ObjectId
+  name        String
+  description String
+  image       String
+  price       String
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  RequestPet  RequestPet[]
+}
+
+model User {
+  id         String       @id @default(auto()) @map("_id") @db.ObjectId
+  firstName  String
+  lastName   String
+  email      String       @unique
+  password   String
+  createdAt  DateTime     @default(now())
+  updatedAt  DateTime     @updatedAt
+  RequestPet RequestPet[]
+}
+
+model RequestPet {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId    String   @db.ObjectId
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  petId     String   @db.ObjectId
+  pet       Pet      @relation(fields: [petId], references: [id], onDelete: Cascade)
+  status    Status   @default(Pending)
+  message   String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum Status {
+  Pending
+  Approved
+  Rejected
+}
