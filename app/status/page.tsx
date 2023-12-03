@@ -45,6 +45,7 @@ const page = async () => {
 
             <CardFooter>
               <p>Status:{item.status}</p>
+              {item.message && <p>Status:{item.message}</p>}
             </CardFooter>
           </Card>
         ))}
